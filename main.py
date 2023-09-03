@@ -553,7 +553,7 @@ class MainWindow(QMainWindow):
 
         cap = cv2.VideoCapture(access)
         if cap.isOpened():
-            print('camera ' + url + " connected.")
+            pass
 
         while True:
             if not self.isStopyolo:
