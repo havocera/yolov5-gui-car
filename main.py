@@ -2,6 +2,7 @@
 #
 # ///////////////////////////////////////////////////////////////
 import datetime
+import glob
 import json
 import socket
 import sys
@@ -57,10 +58,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
-        # sys.stdout = EmittingStr()
-        # sys.stderr = EmittingStr()
-        # sys.stdout.textWritten.connect(self.outputWritten)
-        # sys.stderr.textWritten.connect(self.outputWritten)
+        sys.stdout = EmittingStr()
+        sys.stderr = EmittingStr()
+        sys.stdout.textWritten.connect(self.outputWritten)
+        sys.stderr.textWritten.connect(self.outputWritten)
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
         self.capture = None
@@ -280,7 +281,10 @@ class MainWindow(QMainWindow):
         # widgets.stackedWidget.setCurrentWidget(wight_list[num])
 
     def outputWritten(self, text):
-        widgets.creditsLabel.setText(text)
+        with open("log.txt","a") as f:
+            f.write(text+"\n")
+
+        # widgets.creditsLabel.setText(text)
 
     def start_yolo(self):
         camera_access = []
@@ -499,7 +503,7 @@ class MainWindow(QMainWindow):
 
     def display_frame(self):
         ret, frame = self.capture.read()
-
+        print("video---1")
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out1.write(frame)
@@ -510,7 +514,7 @@ class MainWindow(QMainWindow):
 
     def display_frame_1(self):
         ret, frame = self.capture1.read()
-
+        print("video---2")
         if ret:
             h, w, ch = frame.shape
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -523,7 +527,7 @@ class MainWindow(QMainWindow):
 
     def display_frame_2(self):
         ret, frame = self.capture2.read()
-
+        print("video---3")
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out3.write(frame)
@@ -537,7 +541,7 @@ class MainWindow(QMainWindow):
     def display_frame_3(self):
 
         ret, frame = self.capture3.read()
-
+        print("video---4")
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out4.write(frame)
@@ -644,7 +648,39 @@ class MainWindow(QMainWindow):
                 if i != "":
                     camera_access.append(i)
         return len(camera_access)
+    def createVideo(self):
+        import cv2
+        import os
+        import random
+        import glob
+        for i in range(1, 5, 1):
+            path = os.path.abspath('.') + "/video/{}/".format(i)
 
+            filename = path + "/" + datetime.datetime.now().strftime(
+                "%Y-%m-%d_%H-%M-%S") + "汇总" + ".mp4"
+
+            VideoWriter = cv2.VideoWriter(filename, self.fourcc, 30, (1280, 720))
+            # VideoWriter = cv2.VideoWriter("merge .avi", cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'), 24, (600, 480))
+            mp4list = glob.glob(os.path.join(path + self.strpath + "/", "*.mp4"))
+            # print(mp4list)
+            if len(mp4list) == 0:
+                continue
+            for mp4file in mp4list:
+                capture = cv2.VideoCapture(mp4file)
+                # print(mp4file)
+                while True:
+
+                    ret, prev = capture.read()
+                    # print(ret)
+                    if ret:
+                        VideoWriter.write(prev)
+                    else:
+                        break
+            VideoWriter.release()
+
+        QMessageBox.information(self, "提示",
+                                "视频已合并完成!",
+                                QMessageBox.StandardButton.Ok)
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
     # ///////////////////////////////////////////////////////////////
@@ -697,13 +733,14 @@ class MainWindow(QMainWindow):
                 self.noopen = []
                 self.start_yolo()
                 if len(self.noopen) != self.getLinkNum():
-                    self.isStart = 0
-                    icon2 = QIcon()
-                    icon2.addFile(u":/icons/images/icons/pause.png", QSize(), QIcon.Normal, QIcon.Off)
-                    widgets.playTopBtn.setIcon(icon2)
-                    widgets.playTopBtn.setIconSize(QSize(20, 20))
+                    pass
                 else:
                     print("请打开摄像头")
+                self.isStart = 0
+                icon2 = QIcon()
+                icon2.addFile(u":/icons/images/icons/pause.png", QSize(), QIcon.Normal, QIcon.Off)
+                widgets.playTopBtn.setIcon(icon2)
+                widgets.playTopBtn.setIconSize(QSize(20, 20))
 
             else:
                 self.isStopyolo = False
@@ -751,46 +788,10 @@ class MainWindow(QMainWindow):
                 import os
                 import random
                 import glob
-                self.msg = QMessageBox()
-                # 设置非模态
-                self.msg.setWindowModality(Qt.NonModal)
-                # 设置弹窗标题和内容
-                self.msg.setWindowTitle('警告')
-                self.msg.setText('正在合成视频')
-                # 设置弹窗的按钮为OK，StandardButtons采用位标记，可以用与运算添加其他想要的按钮
-                self.msg.setStandardButtons(QMessageBox.Ok)
-                # 显示窗口
-                self.msg.show()
-
+                video_thread = threading.Thread(target=self.createVideo)
+                video_thread.start()
                 self.isStopyolo = True
-                for i in range(1, 5, 1):
-                    path = os.path.abspath('.') + "/video/{}/".format(i)
 
-                    filename = path + "/" + datetime.datetime.now().strftime(
-                        "%Y-%m-%d_%H-%M-%S") + "汇总" + ".mp4"
-
-                    VideoWriter = cv2.VideoWriter(filename, self.fourcc, 30, (1280, 720))
-                    # VideoWriter = cv2.VideoWriter("merge .avi", cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'), 24, (600, 480))
-                    mp4list = glob.glob(os.path.join(path + self.strpath + "/", "*.mp4"))
-                    # print(mp4list)
-                    if len(mp4list) == 0:
-                        continue
-                    for mp4file in mp4list:
-                        capture = cv2.VideoCapture(mp4file)
-                        # print(mp4file)
-                        while True:
-
-                            ret, prev = capture.read()
-                            # print(ret)
-                            if ret:
-                                VideoWriter.write(prev)
-                            else:
-                                break
-                    VideoWriter.release()
-
-                QMessageBox.information(self, "提示",
-                                        "视频已合并完成!",
-                                        QMessageBox.StandardButton.Ok)
 
             # print("Save BTN clicked!")
         if btnName == "btn_exit":
