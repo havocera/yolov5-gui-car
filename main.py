@@ -54,14 +54,14 @@ class EmittingStr(QtCore.QObject):
 
 class MainWindow(QMainWindow):
     resSignal = Signal(str)
-
+    createVideoFinshSignal = Signal()
     def __init__(self):
         QMainWindow.__init__(self)
 
         sys.stdout = EmittingStr()
-        sys.stderr = EmittingStr()
+        # sys.stderr = EmittingStr()
         sys.stdout.textWritten.connect(self.outputWritten)
-        sys.stderr.textWritten.connect(self.outputWritten)
+        # sys.stderr.textWritten.connect(self.outputWritten)
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
         self.capture = None
@@ -72,7 +72,8 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         global widgets
         widgets = self.ui
-        self.fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
+        self.fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        # self.fourcc = cv2.VideoWriter_fourcc('mp4v')
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
@@ -180,6 +181,7 @@ class MainWindow(QMainWindow):
             AppFunctions.setThemeHack(self)
 
         self.resSignal.connect(self.isclass)
+        self.createVideoFinshSignal.connect(self.Qmessage)
         self.isStopyolo = True
         # SET HOME PAGE AND SELECT MENU
         # ///////////////////////////////////////////////////////////////
@@ -293,6 +295,7 @@ class MainWindow(QMainWindow):
             for i in f.read().split("\n"):
                 if i != "":
                     camera_access.append(i)
+        print(camera_access)
         self.captureMutipleCamera(camera_access)
 
     def isclass(self, data):
@@ -443,8 +446,8 @@ class MainWindow(QMainWindow):
             self.messageAlert(f'{str(link)}无法打开')
             return False
         try:
-            self.capture1 = cv2.VideoCapture(link, cv2.CAP_FFMPEG)
-            self.capture1.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
+            self.capture1 = cv2.VideoCapture(link)
+            # self.capture1.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
             if self.capture1.isOpened():
                 filename = self.base_path + "2/" + self.strpath + "/2" + "_" + datetime.datetime.now().strftime(
                     "%Y-%m-%d_%H-%M-%S") + ".mp4"
@@ -465,8 +468,8 @@ class MainWindow(QMainWindow):
             if not self.isOpenLink(link):
                 self.messageAlert(f'{str(link)}无法打开')
                 return False
-            self.capture2 = cv2.VideoCapture(link, cv2.CAP_FFMPEG)
-            self.capture2.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
+            self.capture2 = cv2.VideoCapture(link)
+            # self.capture2.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
         except:
             pass
         if self.capture2.isOpened():
@@ -488,8 +491,9 @@ class MainWindow(QMainWindow):
             self.messageAlert(f'{str(link)}无法打开')
             return False
         try:
-            self.capture3 = cv2.VideoCapture(link, cv2.CAP_FFMPEG)
-            self.capture3.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
+            self.capture3 = cv2.VideoCapture(link)
+            # cv2.CAP_FFMPEG
+            # self.capture3.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
         except:
             pass
         if self.capture3.isOpened():
@@ -503,7 +507,7 @@ class MainWindow(QMainWindow):
 
     def display_frame(self):
         ret, frame = self.capture.read()
-        print("video---1")
+
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out1.write(frame)
@@ -514,7 +518,7 @@ class MainWindow(QMainWindow):
 
     def display_frame_1(self):
         ret, frame = self.capture1.read()
-        print("video---2")
+
         if ret:
             h, w, ch = frame.shape
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -527,7 +531,7 @@ class MainWindow(QMainWindow):
 
     def display_frame_2(self):
         ret, frame = self.capture2.read()
-        print("video---3")
+
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out3.write(frame)
@@ -541,7 +545,7 @@ class MainWindow(QMainWindow):
     def display_frame_3(self):
 
         ret, frame = self.capture3.read()
-        print("video---4")
+
         if ret:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.out4.write(frame)
@@ -677,10 +681,9 @@ class MainWindow(QMainWindow):
                     else:
                         break
             VideoWriter.release()
-
-        QMessageBox.information(self, "提示",
-                                "视频已合并完成!",
-                                QMessageBox.StandardButton.Ok)
+        self.createVideoFinshSignal.emit()
+    def Qmessage(self):
+        QMessageBox(self,"提示","视频合成完成！",QMessageBox.Ok)
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
     # ///////////////////////////////////////////////////////////////
@@ -730,17 +733,17 @@ class MainWindow(QMainWindow):
 
                 self.strpath = datetime.datetime.now().strftime(
                     "%Y-%m-%d_%H-%M-%S")
-                self.noopen = []
-                self.start_yolo()
-                if len(self.noopen) != self.getLinkNum():
-                    pass
-                else:
-                    print("请打开摄像头")
+                yolo_thread = threading.Thread(target=self.start_yolo)
+                yolo_thread.daemon=True
+                yolo_thread.start()
+                # self.start_yolo()
                 self.isStart = 0
                 icon2 = QIcon()
                 icon2.addFile(u":/icons/images/icons/pause.png", QSize(), QIcon.Normal, QIcon.Off)
                 widgets.playTopBtn.setIcon(icon2)
                 widgets.playTopBtn.setIconSize(QSize(20, 20))
+
+
 
             else:
                 self.isStopyolo = False
@@ -789,6 +792,7 @@ class MainWindow(QMainWindow):
                 import random
                 import glob
                 video_thread = threading.Thread(target=self.createVideo)
+                video_thread.daemon=True
                 video_thread.start()
                 self.isStopyolo = True
 
