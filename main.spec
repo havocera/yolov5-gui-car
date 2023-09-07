@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[
-        (r'D:\code\video\venv\Lib\site-packages\onnxruntime\capi','onnxruntime\capi'),
+(r'D:\code\video\venv\Lib\site-packages\onnxruntime\capi','onnxruntime\capi'),
         (r'D:\code\video\link.txt','.') ,
         (r'D:\code\video\car.txt','.'),
         (r'D:\code\video\bestv5s.onnx','.'),
@@ -38,7 +38,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

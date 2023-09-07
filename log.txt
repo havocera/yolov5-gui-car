@@ -1,312 +1,61 @@
-Traceback (most recent call last):
-
-D:\code\video\main.py:51: DeprecationWarning: 'exec_' will be removed in the future. Use 'exec' instead.
+-----------2023-09-07,17:25:37-----------
+1024
+-----------2023-09-07,17:25:37-----------
+D:\code\video\main.py:57: DeprecationWarning: 'exec_' will be removed in the future. Use 'exec' instead.
   loop.exec_()
 
-  File "D:\code\video\main.py", line 1032, in <module>
+-----------2023-09-07,17:25:38-----------
 
+
+-----------2023-09-07,17:25:44-----------
+鏃犳硶杩炴帴鍒癛TSP鏈嶅姟鍣細rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
+-----------2023-09-07,17:25:45-----------
+
+
+-----------2023-09-07,17:25:51-----------
+鏃犳硶杩炴帴鍒癛TSP鏈嶅姟鍣細rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
+-----------2023-09-07,17:25:51-----------
+
+
+-----------2023-09-07,17:25:57-----------
+鏃犳硶杩炴帴鍒癛TSP鏈嶅姟鍣細rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
+-----------2023-09-07,17:25:58-----------
+
+
+-----------2023-09-07,17:25:59-----------
+Traceback (most recent call last):
+
+-----------2023-09-07,17:26:00-----------
+  File "D:\code\video\main.py", line 640, in buttonClick
+
+-----------2023-09-07,17:26:00-----------
     
-window = MainWindow()
+-----------2023-09-07,17:26:01-----------
+self.start_capture_2(self.link3)
+-----------2023-09-07,17:26:02-----------
 
 
-  File "D:\code\video\main.py", line 76, in __init__
+-----------2023-09-07,17:26:03-----------
+  File "D:\code\video\main.py", line 494, in start_capture_2
 
+-----------2023-09-07,17:26:04-----------
     
-self.fourcc = cv2.VideoWriter_fourcc('mp4v')
+-----------2023-09-07,17:26:04-----------
+if self.capture2.isOpened():
+-----------2023-09-07,17:26:05-----------
 
 
-TypeError
+-----------2023-09-07,17:26:06-----------
+AttributeError
+-----------2023-09-07,17:26:07-----------
 : 
-VideoWriter_fourcc() missing required argument 'c2' (pos 2)
+-----------2023-09-07,17:26:08-----------
+'NoneType' object has no attribute 'isOpened'
+-----------2023-09-07,17:26:09-----------
 
 
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-shuangji
-shuangji
- 
-1
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-
-
- 
-1
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-EP Error D:\a\_work\1\s\onnxruntime\core\session\provider_bridge_ort.cc:1131 onnxruntime::ProviderLibrary::Get [ONNXRuntimeError] : 1 : FAIL : LoadLibrary failed with error 126 "" when trying to load "D:\code\video\venv\lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll"
- when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
-
-
-Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-['rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.109:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.110:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.111:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.112:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.113:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.114:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.115:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.116:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.117:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.118:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.119:554/user=admin&password=a1234567&channel=1&stream=0.sdp?', 'rtsp://192.168.110.120:554/user=admin&password=a1234567&channel=1&stream=0.sdp?']
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.101:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.102:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.103:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.104:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.105:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.106:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.107:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
-
-
-无法连接到RTSP服务器：rtsp://192.168.110.108:554/user=admin&password=a1234567&channel=1&stream=0.sdp?
+-----------2023-09-07,17:28:47-----------
+65536
+-----------2023-09-07,17:28:48-----------
 
 

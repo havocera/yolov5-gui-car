@@ -20,20 +20,21 @@
 import time
 
 import cv2
-from ultralytics import YOLO
 
 # Load a model
 # model = YOLO('yolov8n.pt')  # load an official model
-model = YOLO('bestv5s.onnx')  # load a custom trained
-
-# Export the model
-cap = cv2.VideoCapture("./video.mp4")
-while True:
-    ret,frame = cap.read()
-    start_time = time.time()
-    if ret:
-        res = model(frame)
-        print(res)
-    end_time = time.time()
-    print(1/(end_time-start_time))
-    # cv2.imshow(res["orig_img"])
+# model = YOLO('bestv5s.onnx')  # load a custom trained
+#
+# # Export the model
+# cap = cv2.VideoCapture("./video.mp4")
+# while True:
+#     ret,frame = cap.read()
+#     start_time = time.time()
+#     if ret:
+#         res = model(frame)
+#         print(res)
+#     end_time = time.time()
+#     print(1/(end_time-start_time))
+#     # cv2.imshow(res["orig_img"])
+for (i, index) in range(1, 9):
+    print(i, index)

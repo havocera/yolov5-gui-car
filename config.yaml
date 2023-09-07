@@ -1,0 +1,34 @@
+# MQTT Broker Configuration
+
+listeners:
+  default:
+    type: tcp
+    bind: 0.0.0.0:1883  # MQTT监听地址和端口
+    max_connections: 1000  # 最大连接数
+    access_control:
+      allow_anonymous: true  # 允许匿名连接
+      acl:
+        - allow: true
+          client_id: "*"  # 允许所有客户端连接
+          username: "*"
+          topic: "#"  # 允许访问所有主题
+
+auth:
+  plugins:
+    - allow_anonymous
+
+plugins:
+  - auth.anonymous  # 启用匿名认证插件
+
+auth.anonymous:
+  allow: true
+
+access:
+  - allow: true
+    client_id: "*"
+    username: "*"
+    topic: "#"
+
+
+log:
+  level: info

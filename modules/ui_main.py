@@ -969,8 +969,20 @@ class Ui_MainWindow(object):
         icon2.addFile(u":/icons/images/icons/play.png", QSize(), QIcon.Normal, QIcon.Off)
         self.playTopBtn.setIcon(icon2)
         self.playTopBtn.setIconSize(QSize(20, 20))
-
+        # --------
+        self.playTopBtn2 = QPushButton(self.rightButtons)
+        self.playTopBtn2.setObjectName(u"playTopBtn")
+        self.playTopBtn2.setMinimumSize(QSize(28, 28))
+        self.playTopBtn2.setMaximumSize(QSize(28, 28))
+        self.playTopBtn2.setCursor(QCursor(Qt.PointingHandCursor))
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/images/icons/cil-screen-desktop.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.playTopBtn2.setIcon(icon3)
+        self.playTopBtn2.setIconSize(QSize(20, 20))
         self.horizontalLayout_2.addWidget(self.playTopBtn)
+        self.horizontalLayout_2.addWidget(self.playTopBtn2)
+
+
         self.horizontalLayout_2.addWidget(self.settingsTopBtn)
 
 

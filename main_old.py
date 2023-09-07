@@ -17,20 +17,16 @@ import numpy as np
 import websockets
 
 from PySide6.QtCore import QTimer, Signal
-from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QMainWindow
 from onnxruntime.capi.onnxruntime_pybind11_state import InvalidGraph
 
 import cv2
 import sys
 import sys
 
-import yolo_thread
-
 # 里面替换为自己项目目录下的文件路径
 sys.path.insert(0, os.path.abspath('.'))
 import onnxruntime
-from PySide6.QtWebSockets import QWebSocket
+
 from modules.resources_rc import *
 
 # IMPORT / GUI AND MODULES AND WIDGETS
@@ -62,17 +58,15 @@ class MainWindow(QMainWindow):
     resSignal = Signal(str)
     createVideoFinshSignal = Signal()
 
-    def __init__(self, yoloModel):
+    def __init__(self):
         QMainWindow.__init__(self)
-        self.car = None
-        self.yolo = yoloModel
-        sys.stdout = EmittingStr()
-        sys.stderr = EmittingStr()
-        sys.stdout.textWritten.connect(self.outputWritten)
-        sys.stderr.textWritten.connect(self.outputWritten)
+
+        # sys.stdout = EmittingStr()
+        # sys.stderr = EmittingStr()
+        # sys.stdout.textWritten.connect(self.outputWritten)
+        # sys.stderr.textWritten.connect(self.outputWritten)
         # SET AS GLOBAL WIDGETS
         # ///////////////////////////////////////////////////////////////
-
         self.capture = None
         self.capture3 = None
         self.capture2 = None
@@ -124,7 +118,6 @@ class MainWindow(QMainWindow):
         widgets.btn_save.clicked.connect(self.buttonClick)
         widgets.btn_exit.clicked.connect(self.buttonClick)
         widgets.playTopBtn.clicked.connect(self.buttonClick)
-        widgets.playTopBtn2.clicked.connect(self.yolo_contro)
         widgets.refreshbtn.clicked.connect(self.refreshcar)
         widgets.editbtn.clicked.connect(self.editcar)
         widgets.home_widget_3.DoubleClicked.connect(partial(self.current_wight, 1))
@@ -138,6 +131,19 @@ class MainWindow(QMainWindow):
         self.thread_ids = []
         self.current_video = 0
 
+        # self.websocket = websockets.connect("ws://localhost:28765")
+        # thread_wsk = threading.Thread(target=self.rec_message)
+        # thread_wsk.daemon = True
+        # thread_wsk.start()
+        '''
+         onnx配置
+        '''
+        # import onnxruntime
+
+        # print(onnxruntime.get_device())
+        # self.onnx_model = self.load_onnx_model("./ptmodel/best.onnx")
+        self.onnx_path = 'bestv5s.onnx'
+        self.onnx_session = None
         self.link = []
         self.CLASSES = []
         self.refreshcar()
@@ -157,6 +163,8 @@ class MainWindow(QMainWindow):
         widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
+        # self.model.isClass.connect(self.isclass)
+        # EXTRA RIGHT BOX
         def openCloseRightBox():
             UIFunctions.toggleRightBox(self, True)
 
@@ -180,6 +188,8 @@ class MainWindow(QMainWindow):
             # SET HACKS
             AppFunctions.setThemeHack(self)
 
+
+
         self.isStopyolo = True
         # SET HOME PAGE AND SELECT MENU
         # ///////////////////////////////////////////////////////////////
@@ -191,17 +201,14 @@ class MainWindow(QMainWindow):
         else:
             self.defaultLink = ""
         self.link1 = self.defaultLink
-        self.link2 = self.link[1][1]
-        self.link3 = self.link[2][1]
-        self.link4 = self.link[3][1]
+        self.link2 = self.defaultLink
+        self.link3 = self.defaultLink
+        self.link4 = self.defaultLink
         self.out1 = None
         self.out2 = None
         self.out3 = None
         self.out4 = None
-        self.yolo.yoloSignl.connect(self.isclass)
-        self.yolo.yoloStatusSignl.connect(self.yoloStatus)
         widgets.linkTable.setColumnCount(2)
-        # widgets.playTopBtn2.connect(self.yolo_contro)
         # widgets.linkTable.setRowCount(3)
         widgets.linkTable.setHorizontalHeaderLabels(["序号", "url"])
         widgets.linkTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -214,61 +221,11 @@ class MainWindow(QMainWindow):
                 item.setTextAlignment(Qt.AlignCenter)
                 # item.setFlags(item.flags() != QtCore.Qt.ItemIsEditable)
                 widgets.linkTable.setItem(row, j, item)
-        widgets.creditsLabel.setText("软件已经启动")
-        self.isyolo = True
 
-    def yoloStatus(self, data):
-        msg = json.loads(data)
-        if msg["status"]:
-            widgets.creditsLabel.setText(msg["message"])
-        else:
-            widgets.creditsLabel.setText("未知错误")
-
-    def stop_yolo(self):
-        self.yolo.isStopyolo = False
-        thread_count = 0
-        for i in self.yolo.thread_ids:
-            i.join()
-            if i.is_alive():
-                thread_count += 1
-                widgets.creditsLabel.setText(f"关闭线程{thread_count}")
-        widgets.creditsLabel.setText(f"关闭线程完成，正在合成视频")
-        for num in range(1, 5):
-            self.yolo.recorders["stream" + str(num)].stop()
-        self.yolo.createVideo()
-        widgets.creditsLabel.setText(f"合成视频完成，在软件目录的video文件夹自取")
-
-    def yolo_contro(self):
-
-        if self.isyolo:
-            self.startyolobox = QMessageBox.question(self, '提醒', '确定开启识别，并启动本次视频录制？',
-                                                 QMessageBox.StandardButton.Ok,
-                                                 QMessageBox.StandardButton.No)
-            if self.startyolobox == QMessageBox.StandardButton.Ok:
-                widgets.creditsLabel.setText("正在开启视频识别")
-                self.yolo.captureMutipleCamera()
-                self.isyolo = False
-        else:
-            self.endyolobox = QMessageBox.question(self, '提醒', '确定关闭本次识别，并开始合成视频？',
-                                                 QMessageBox.StandardButton.Ok,
-                                                 QMessageBox.StandardButton.No)
-            if self.endyolobox == QMessageBox.StandardButton.Ok:
-                widgets.creditsLabel.setText("正在关闭视频识别")
-                self.yolo.isStopyolo = False
-                # thread_count = 0
-                # for i in self.yolo.thread_ids:
-                #     i.join()
-                #     if i.is_alive():
-                #         thread_count += 1
-                #         widgets.creditsLabel.setText(f"关闭线程{thread_count}")
-                #
-                # for num in range(1, 5):
-                #     self.yolo.recorders["stream" + str(num)].stop()
-                # self.yolo.createVideo()
-                stop_yolo_thread = threading.Thread(target=self.stop_yolo)
-                stop_yolo_thread.start()
-                widgets.creditsLabel.setText("正在子线程关闭视频识别")
-                self.isyolo = True
+            ##############################################
+            #                                            #
+            #              socket                        #
+            ##############################################
 
     ######################################################
     #              双击放大功能实现                       #
@@ -337,24 +294,32 @@ class MainWindow(QMainWindow):
 
         print("shuangji", num)
         # widgets.stackedWidget.setCurrentWidget(wight_list[num])
-
+    def rec_message(self):
+        while True:
+            try:
+                if self.websocket.connected:
+                    print("lianjie")
+                    message = self.websocket.recv()
+                    self.isclass(message)
+            except:
+                pass
     def outputWritten(self, text):
-        with open("log.txt", "a",encoding="utf-8") as f:
-            now =datetime.datetime.now()
-            formatted_datetime = now.strftime("%Y-%m-%d,%H:%M:%S")
-
-            f.write("-----------"+formatted_datetime +"-----------\n"+text + "\n")
+        with open("log.txt", "a") as f:
+            f.write(text + "\n")
 
         # widgets.creditsLabel.setText(text)
 
     def isclass(self, data):
+        car = []
+        car.append(widgets.comboBox_4.currentText())
+        car.append(widgets.comboBox_5.currentText())
+        car.append(widgets.comboBox_6.currentText())
+        car.append(widgets.comboBox_7.currentText())
+        print(car)
+        data = json.loads(data)
+        print(data)
         try:
-            data = json.loads(data)
-            print(data)
-        except Exception as e:
-            print(e)
-        try:
-            frame_num = self.car.index(data["class"])
+            frame_num = car.index(data["class"])
         except ValueError:
             print(ValueError)
             return 0
@@ -446,6 +411,21 @@ class MainWindow(QMainWindow):
             new_file.close()
         carpath = os.path.abspath('.') + "/car.txt"
         os.system("notepad {}".format(carpath))
+
+    def load_onnx_model(self):
+        try:
+            session = onnxruntime.InferenceSession("bestv5s.onnx",
+                                                   providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider',
+                                                              'CPUExecutionProvider'])
+        except (InvalidGraph, TypeError, RuntimeError) as e:
+            # It is possible for there to be a mismatch between the onnxruntime and the
+            # version of the onnx model format.
+            print(e)
+            raise e
+        return session
+
+    def show_result(self, statistic_dic):
+        print(statistic_dic)
 
     # 视频播放
     @Slot()
@@ -563,6 +543,71 @@ class MainWindow(QMainWindow):
                                                                            aspectMode=Qt.KeepAspectRatio)
             widgets.home_widget_5.setPixmap(QPixmap.fromImage(img))
 
+    def threadCameraRSTP(self, url):
+        access = url
+
+        cap = cv2.VideoCapture(access)
+        if cap.isOpened():
+            pass
+
+        while True:
+            if not self.isStopyolo:
+                return
+            ret, img = cap.read()
+
+            if ret:
+                self.run(img, url)
+            else:
+                cap.release()
+                break
+
+    def captureMutipleCamera(self):
+        """save image
+        @camera_access  All paremeters to capture and save the image, list, the format lile,
+                        [
+                            ["HIKVISION", "admin", "aaron20127", "192.168.0.111", 'D:/data/image'],
+                            ["USB", 0, 'D:/data/image']
+                        ]
+        @start_Num     Image show name.
+        @display       Whether display image.
+        """
+        camera_access = []
+        with open("./link.txt", 'r') as f:
+            linkNum = 1
+            for i in f.read().split("\n"):
+                if i != "":
+                    camera_access.append(i)
+
+        widgets.creditsLabel.setText("正在获取摄像头多线程")
+        # there must import queue, I don't know why
+        import queue
+        self.thread_ids.clear()
+        ## 1.start camera threads and save threads
+        for camera in camera_access:
+            if self.isOpenLink(camera):
+
+                identification = None
+                cameraThread = None
+                dstDir = None
+                queueImage = queue.Queue(maxsize=4)
+                queueCmd = queue.Queue(maxsize=4)
+                cameraThread = threading.Thread(target=self.threadCameraRSTP, args=(camera,))
+
+                # camera thread
+                self.thread_ids.append(cameraThread)
+            else:
+                self.noopen.append(camera)
+
+        for thread in self.thread_ids:
+            # thread.daemon = True
+            thread.start()
+        widgets.creditsLabel.setText("多线程已启用")
+
+    def stop(self):
+        for thread in self.thread_ids:
+            thread.join()
+            del thread
+
     def isOpenLink(self, rtsp_url):
 
         try:
@@ -577,6 +622,23 @@ class MainWindow(QMainWindow):
             print(f"无法连接到RTSP服务器：{rtsp_url}")
             return False
 
+    def messageAlert(self, content):
+        msg = QMessageBox()
+        # 设置非模态
+        msg.setWindowModality(Qt.NonModal)
+        # self.msg.setFixedSize(400,250)
+        msg.setStyleSheet("QLabel{"
+                          "min-width: 200px;"
+                          "min-height: 100px; "
+                          "}")
+        # 设置弹窗标题和内容
+        msg.setWindowTitle('警告')
+        msg.setText(content)
+        # 设置弹窗的按钮为OK，StandardButtons采用位标记，可以用与运算添加其他想要的按钮
+        msg.setStandardButtons(QMessageBox.Ok)
+        # 显示窗口
+        msg.show()
+
     def getLinkNum(self):
         camera_access = []
         with open("./link.txt", 'r') as f:
@@ -585,6 +647,50 @@ class MainWindow(QMainWindow):
                 if i != "":
                     camera_access.append(i)
         return len(camera_access)
+
+    def createVideo(self):
+        '''
+        动画开始
+
+        '''
+        widgets.creditsLabel.setText("正在合成视频。。。")
+        '''
+        
+        
+        '''
+
+        import cv2
+        import os
+        import random
+        import glob
+        for i in range(1, 5, 1):
+            path = os.path.abspath('.') + "/video/{}/".format(i)
+
+            filename = path + "/" + datetime.datetime.now().strftime(
+                "%Y-%m-%d_%H-%M-%S") + "汇总" + ".mp4"
+
+            VideoWriter = cv2.VideoWriter(filename, self.fourcc, 30, (1280, 720))
+            # VideoWriter = cv2.VideoWriter("merge .avi", cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'), 24, (600, 480))
+            mp4list = glob.glob(os.path.join(path + self.strpath + "/", "*.mp4"))
+            # print(mp4list)
+            if len(mp4list) == 0:
+                continue
+            for mp4file in mp4list:
+                capture = cv2.VideoCapture(mp4file)
+                # print(mp4file)
+                while True:
+
+                    ret, prev = capture.read()
+                    # print(ret)
+                    if ret:
+                        VideoWriter.write(prev)
+                    else:
+                        break
+            VideoWriter.release()
+        print("视频完事了")
+        widgets.creditsLabel.setText("视频完事了")
+        QMessageBox(None, "提示", "视频合成完成！", QMessageBox.Ok)
+        # self.createVideoFinshSignal.emit()
 
     @Slot()
     def Qmessage(self):
@@ -620,82 +726,79 @@ class MainWindow(QMainWindow):
 
         if btnName == "playTopBtn":
             if self.isStart == 1:
-
-                self.startbox = QMessageBox.question(self, '提醒', '确定要打开摄像头吗？', QMessageBox.StandardButton.Ok,
-                                                     QMessageBox.StandardButton.No)
-                print(self.startbox)
-
-                if self.startbox == QMessageBox.StandardButton.Ok:
-                    widgets.creditsLabel.setText("正在加载视频")
-
-                    self.out1 = None
-                    self.out2 = None
-                    self.out3 = None
-                    self.out4 = None
-
+                self.link1 = self.defaultLink
+                self.link2 = self.defaultLink
+                self.link3 = self.defaultLink
+                self.link4 = self.defaultLink
+                self.out1 = None
+                self.out2 = None
+                self.out3 = None
+                self.out4 = None
+                if self.isOpenLink(self.link1):
                     self.start_capture(self.link1)
-
+                if self.isOpenLink(self.link2):
                     self.start_capture_1(self.link2)
-
+                if self.isOpenLink(self.link3):
                     self.start_capture_2(self.link3)
-
+                if self.isOpenLink(self.link4):
                     self.start_capture_3(self.link4)
-                    self.car = []
-                    self.car.append(widgets.comboBox_4.currentText())
-                    self.car.append(widgets.comboBox_5.currentText())
-                    self.car.append(widgets.comboBox_6.currentText())
-                    self.car.append(widgets.comboBox_7.currentText())
-                    self.isStart = 0
-                    icon2 = QIcon()
-                    icon2.addFile(u":/icons/images/icons/pause.png", QSize(), QIcon.Normal, QIcon.Off)
-                    widgets.playTopBtn.setIcon(icon2)
-                    widgets.playTopBtn.setIconSize(QSize(20, 20))
-                    widgets.creditsLabel.setText("加载完成，可以开启摄像头识别")
+
+                self.strpath = datetime.datetime.now().strftime(
+                    "%Y-%m-%d_%H-%M-%S")
+                start_data = {
+                    "status": 1,
+                    "class": "car"
+                }
+                self.websocket.send_message(json.dumps(start_data))
+                self.isStart = 0
+                icon2 = QIcon()
+                icon2.addFile(u":/icons/images/icons/pause.png", QSize(), QIcon.Normal, QIcon.Off)
+                widgets.playTopBtn.setIcon(icon2)
+                widgets.playTopBtn.setIconSize(QSize(20, 20))
             else:
-                self.endbox = QMessageBox.question(self, '提醒', '确定要关闭摄像头吗？', QMessageBox.StandardButton.Ok,
-                                                   QMessageBox.StandardButton.No)
 
-                if self.endbox == QMessageBox.StandardButton.Ok:
+                if self.timer != None:
+                    self.timer.stop()
+                if self.capture != None:
+                    self.out1.release()
+                    self.capture.release()
+                self.capture = None
 
-                    widgets.creditsLabel.setText("正在关闭视频")
-                    try:
-                        if self.timer != None:
-                            self.timer.stop()
-                        if self.capture != None:
-                            self.capture.release()
-                        self.capture = None
-
-                        if self.timer1 != None:
-                            self.timer1.stop()
-                        if self.capture1 != None:
-                            self.capture1.release()
-                        # self.capture1.release()
-                        self.capture1 = None
-                        if self.timer2 != None:
-                            self.timer2.stop()
-                        if self.capture2 != None:
-                            self.capture2.release()
-                        # self.capture2.release()
-                        self.capture2 = None
-                        if self.timer3 != None:
-                            self.timer3.stop()
-                        if self.capture3 != None:
-                            self.capture3.release()
-                        # self.capture3.release()
-                        self.capture3 = None
-                    except Exception as e:
-                        print(e)
-
-                    widgets.home_widget_6.clear()
-                    widgets.home_widget_5.clear()
-                    widgets.home_widget_4.clear()
-                    widgets.home_widget_3.clear()
-                    self.isStart = 1
-                    icon1 = QIcon()
-                    icon1.addFile(u":/icons/images/icons/play.png", QSize(), QIcon.Normal, QIcon.Off)
-                    widgets.playTopBtn.setIcon(icon1)
-                    widgets.playTopBtn.setIconSize(QSize(20, 20))
-                    widgets.creditsLabel.setText("视频已经关闭")
+                if self.timer1 != None:
+                    self.timer1.stop()
+                if self.capture1 != None:
+                    self.out2.release()
+                    self.capture1.release()
+                # self.capture1.release()
+                self.capture1 = None
+                if self.timer2 != None:
+                    self.timer2.stop()
+                if self.capture2 != None:
+                    self.out3.release()
+                    self.capture2.release()
+                # self.capture2.release()
+                self.capture2 = None
+                if self.timer3 != None:
+                    self.timer3.stop()
+                if self.capture3 != None:
+                    self.out4.release()
+                    self.capture3.release()
+                # self.capture3.release()
+                self.capture3 = None
+                end_data = {
+                    "status": 0,
+                    "class": "car"
+                }
+                self.websocket.send_message(json.dumps(end_data))
+                widgets.home_widget_6.clear()
+                widgets.home_widget_5.clear()
+                widgets.home_widget_4.clear()
+                widgets.home_widget_3.clear()
+                self.isStart = 1
+                icon1 = QIcon()
+                icon1.addFile(u":/icons/images/icons/play.png", QSize(), QIcon.Normal, QIcon.Off)
+                widgets.playTopBtn.setIcon(icon1)
+                widgets.playTopBtn.setIconSize(QSize(20, 20))
 
             # print("Save BTN clicked!")
         if btnName == "btn_exit":
@@ -728,6 +831,203 @@ class MainWindow(QMainWindow):
         if event.buttons() == Qt.RightButton:
             pass
             # print('Mouse click: RIGHT CLICK')
+            '''
+            =====================yolo=========================
+            '''
+
+    def get_input_name(self):
+        """获取输入节点名称"""
+        input_name = []
+        for node in self.onnx_session.get_inputs():
+            input_name.append(node.name)
+
+        return input_name
+
+    def get_output_name(self):
+        """获取输出节点名称"""
+        output_name = []
+        for node in self.onnx_session.get_outputs():
+            output_name.append(node.name)
+
+        return output_name
+
+    def get_input_feed(self, image_numpy):
+        """获取输入numpy"""
+        input_feed = {}
+        for name in self.input_name:
+            input_feed[name] = image_numpy
+
+        return input_feed
+
+    def inference(self, img_path):
+        """ 1.cv2读取图像并resize
+        2.图像转BGR2RGB和HWC2CHW(因为yolov5的onnx模型输入为 RGB：1 × 3 × 640 × 640)
+        3.图像归一化
+        4.图像增加维度
+        5.onnx_session 推理 """
+        # img = cv2.imread(img_path)
+        or_img = cv2.resize(img_path, (640, 640))  # resize后的原图 (640, 640, 3)
+        img = or_img[:, :, ::-1].transpose(2, 0, 1)  # BGR2RGB和HWC2CHW
+        img = img.astype(dtype=np.float32)  # onnx模型的类型是type: float32[ , , , ]
+        img /= 255.0
+        img = np.expand_dims(img, axis=0)  # [3, 640, 640]扩展为[1, 3, 640, 640]
+        # img尺寸(1, 3, 640, 640)
+        input_feed = self.get_input_feed(img)  # dict:{ input_name: input_value }
+        pred = self.onnx_session.run(None, input_feed)[0]  # <class 'numpy.ndarray'>(1, 25200, 9)
+
+        return pred, or_img
+
+    # dets:  array [x,6] 6个值分别为x1,y1,x2,y2,score,class
+    # thresh: 阈值
+    def nms(self, dets, thresh):
+        # dets:x1 y1 x2 y2 score class
+        # x[:,n]就是取所有集合的第n个数据
+        x1 = dets[:, 0]
+        y1 = dets[:, 1]
+        x2 = dets[:, 2]
+        y2 = dets[:, 3]
+        # -------------------------------------------------------
+        #   计算框的面积
+        #	置信度从大到小排序
+        # -------------------------------------------------------
+        areas = (y2 - y1 + 1) * (x2 - x1 + 1)
+        scores = dets[:, 4]
+        # print(scores)
+        keep = []
+        index = scores.argsort()[::-1]  # np.argsort()对某维度从小到大排序
+        # [::-1] 从最后一个元素到第一个元素复制一遍。倒序从而从大到小排序
+
+        while index.size > 0:
+            i = index[0]
+            keep.append(i)
+            # -------------------------------------------------------
+            #   计算相交面积
+            #	1.相交
+            #	2.不相交
+            # -------------------------------------------------------
+            x11 = np.maximum(x1[i], x1[index[1:]])
+            y11 = np.maximum(y1[i], y1[index[1:]])
+            x22 = np.minimum(x2[i], x2[index[1:]])
+            y22 = np.minimum(y2[i], y2[index[1:]])
+
+            w = np.maximum(0, x22 - x11 + 1)
+            h = np.maximum(0, y22 - y11 + 1)
+
+            overlaps = w * h
+            # -------------------------------------------------------
+            #   计算该框与其它框的IOU，去除掉重复的框，即IOU值大的框
+            #	IOU小于thresh的框保留下来
+            # -------------------------------------------------------
+            ious = overlaps / (areas[i] + areas[index[1:]] - overlaps)
+            idx = np.where(ious <= thresh)[0]
+            index = index[idx + 1]
+        return keep
+
+    def xywh2xyxy(self, x):
+        # [x, y, w, h] to [x1, y1, x2, y2]
+        y = np.copy(x)
+        y[:, 0] = x[:, 0] - x[:, 2] / 2
+        y[:, 1] = x[:, 1] - x[:, 3] / 2
+        y[:, 2] = x[:, 0] + x[:, 2] / 2
+        y[:, 3] = x[:, 1] + x[:, 3] / 2
+        return y
+
+    def filter_box(self, org_box, conf_thres, iou_thres):  # 过滤掉无用的框
+        # -------------------------------------------------------
+        #   删除为1的维度
+        #	删除置信度小于conf_thres的BOX
+        # -------------------------------------------------------
+        org_box = np.squeeze(org_box)  # 删除数组形状中单维度条目(shape中为1的维度)
+        # (25200, 9)
+        # […,4]：代表了取最里边一层的所有第4号元素，…代表了对:,:,:,等所有的的省略。此处生成：25200个第四号元素组成的数组
+        conf = org_box[..., 4] > conf_thres  # 0 1 2 3 4 4是置信度，只要置信度 > conf_thres 的
+        box = org_box[conf == True]  # 根据objectness score生成(n, 9)，只留下符合要求的框
+        # print('box:符合要求的框')
+        # print(box.shape)
+
+        # -------------------------------------------------------
+        #   通过argmax获取置信度最大的类别
+        # -------------------------------------------------------
+        cls_cinf = box[..., 5:]  # 左闭右开（5 6 7 8），就只剩下了每个grid cell中各类别的概率
+        cls = []
+        for i in range(len(cls_cinf)):
+            cls.append(int(np.argmax(cls_cinf[i])))  # 剩下的objecctness score比较大的grid cell，分别对应的预测类别列表
+        all_cls = list(set(cls))  # 去重，找出图中都有哪些类别
+        # set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。
+        # -------------------------------------------------------
+        #   分别对每个类别进行过滤
+        #   1.将第6列元素替换为类别下标
+        #	2.xywh2xyxy 坐标转换
+        #	3.经过非极大抑制后输出的BOX下标
+        #	4.利用下标取出非极大抑制后的BOX
+        # -------------------------------------------------------
+        output = []
+        for i in range(len(all_cls)):
+            curr_cls = all_cls[i]
+            curr_cls_box = []
+            curr_out_box = []
+
+            for j in range(len(cls)):
+                if cls[j] == curr_cls:
+                    box[j][5] = curr_cls
+                    curr_cls_box.append(box[j][:6])  # 左闭右开，0 1 2 3 4 5
+
+            curr_cls_box = np.array(curr_cls_box)  # 0 1 2 3 4 5 分别是 x y w h score class
+            # curr_cls_box_old = np.copy(curr_cls_box)
+            curr_cls_box = self.xywh2xyxy(curr_cls_box)  # 0 1 2 3 4 5 分别是 x1 y1 x2 y2 score class
+            curr_out_box = self.nms(curr_cls_box, iou_thres)  # 获得nms后，剩下的类别在curr_cls_box中的下标
+
+            for k in curr_out_box:
+                output.append(curr_cls_box[k])
+        output = np.array(output)
+        return output
+
+    def draw(self, image, box_data, url):
+        # -------------------------------------------------------
+        #	取整，方便画框
+        # -------------------------------------------------------
+
+        boxes = box_data[..., :4].astype(np.int32)  # x1 x2 y1 y2
+        scores = box_data[..., 4]
+        classes = box_data[..., 5].astype(np.int32)
+        # print(classes)
+
+        for box, score, cl in zip(boxes, scores, classes):
+            top, left, right, bottom = box
+            isclassdata = {"link": url, "class": self.CLASSES[cl]}
+            self.resSignal.emit(json.dumps(isclassdata))
+
+            # print('class: {}, score: {}'.format(CLASSES[cl], score))
+            # print('box coordinate left,top,right,down: [{}, {}, {}, {}]'.format(top, left, right, bottom))
+
+            cv2.rectangle(image, (top, left), (right, bottom), (255, 0, 0), 2)
+            cv2.putText(image, '{0} {1:.2f}'.format(self.CLASSES[cl], score),
+                        (top, left),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6, (0, 0, 255), 2)
+        return image
+
+    def run(self, frame, url):
+
+        output, or_img = self.inference(frame)
+        outbox = self.filter_box(output, 0.5, 0.5)
+        if len(outbox) == 0:
+            pass
+            # print('没有发现物体')
+            # sys.exit(0)
+        else:
+
+            or_img = self.draw(or_img, outbox, url)
+        return or_img
+
+
+'''
+===================yolo
+
+'''
+
+
+
 
 
 if __name__ == "__main__":
@@ -737,11 +1037,13 @@ if __name__ == "__main__":
         QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
-    yolo = yolo_thread.YoloThread()
-    window = MainWindow(yolo)
+
+
+    window = MainWindow()
 
     try:
         app_exec = app.exec
     except AttributeError:
         app_exec = app.exec_
-    sys.exit(app_exec())
+
+    sys.exit(app_exec)
