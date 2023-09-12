@@ -14,7 +14,7 @@ import time
 from functools import partial
 
 import numpy as np
-import websockets
+
 
 from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import Qt
@@ -53,7 +53,7 @@ class EmittingStr(QtCore.QObject):
     def write(self, text):
         self.textWritten.emit(str(text))
         loop = QEventLoop()
-        QTimer.singleShot(800, loop.quit)
+        QTimer.singleShot(100, loop.quit)
         loop.exec_()
         QApplication.processEvents()
 
@@ -192,8 +192,8 @@ class MainWindow(QMainWindow):
             self.defaultLink = ""
         self.link1 = self.defaultLink
         self.link2 = self.link[1][1]
-        self.link3 = self.link[2][1]
-        self.link4 = self.link[3][1]
+        self.link3 = self.link[1][1]
+        self.link4 = self.link[1][1]
         self.out1 = None
         self.out2 = None
         self.out3 = None
@@ -246,7 +246,8 @@ class MainWindow(QMainWindow):
                                                  QMessageBox.StandardButton.No)
             if self.startyolobox == QMessageBox.StandardButton.Ok:
                 widgets.creditsLabel.setText("正在开启视频识别")
-                self.yolo.captureMutipleCamera()
+                s_thread = threading.Thread(target=self.yolo.captureMutipleCamera)
+                s_thread.start()
                 self.isyolo = False
         else:
             self.endyolobox = QMessageBox.question(self, '提醒', '确定关闭本次识别，并开始合成视频？',
@@ -361,43 +362,47 @@ class MainWindow(QMainWindow):
         if frame_num == 1:
             if self.link1 != data["link"]:
                 self.link1 = data["link"]
+                self.capture.release()
                 if self.timer == None:
                     self.start_capture(data["link"])
                 else:
-                    self.out1.release()
+
                     self.capture = None
-                    self.timer.close()
+                    # self.timer.stop()
                     self.start_capture(data["link"])
 
         elif frame_num == 2:
             if self.link2 != data["link"]:
                 self.link2 = data["link"]
+                self.capture1.release()
                 if self.timer1 == None:
                     self.start_capture_1(data["link"])
                 else:
-                    self.out2.release()
+
                     self.capture1 = None
-                    self.timer1.close()
+                    # self.timer1.stop()
                     self.start_capture_1(data["link"])
         elif frame_num == 3:
             if self.link3 != data["link"]:
                 self.link3 = data["link"]
+                self.capture2.release()
                 if self.timer2 == None:
                     self.start_capture_2(data["link"])
                 else:
-                    self.out3.release()
+
                     self.capture2 = None
-                    self.timer2.close()
+                    # self.timer2.stop()
                     self.start_capture_2(data["link"])
         elif frame_num == 4:
             if self.link4 != data["link"]:
                 self.link4 = data["link"]
+                self.capture3.release()
                 if self.timer3 == None:
                     self.start_capture_3(data["link"])
                 else:
-                    self.out4.release()
+
                     self.capture3 = None
-                    self.timer3.close()
+                    # self.timer3.stop()
                     self.start_capture_3(data["link"])
 
         # print(data)
@@ -453,8 +458,8 @@ class MainWindow(QMainWindow):
         if link is None:
             link = self.defaultLink
 
-        if not self.isOpenLink(link):
-            return False
+        # if not self.isOpenLink(link):
+        #     return False
         self.capture = cv2.VideoCapture(link)
         if self.capture.isOpened():
             self.timer = QTimer(self)
@@ -466,8 +471,8 @@ class MainWindow(QMainWindow):
         if link is None:
             link = self.defaultLink
 
-        if not self.isOpenLink(link):
-            return False
+        # if not self.isOpenLink(link):
+        #     return False
         try:
             self.capture1 = cv2.VideoCapture(link)
             # self.capture1.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
@@ -484,9 +489,9 @@ class MainWindow(QMainWindow):
             link = self.defaultLink
         try:
 
-            if not self.isOpenLink(link):
-                self.messageAlert(f'{str(link)}无法打开')
-                return False
+            # if not self.isOpenLink(link):
+            #     self.messageAlert(f'{str(link)}无法打开')
+            #     return False
             self.capture2 = cv2.VideoCapture(link)
             # self.capture2.set(cv2.CAP_PROP_FFMPEG_TIMEOUT, 3000)
         except:
@@ -501,9 +506,9 @@ class MainWindow(QMainWindow):
         if link is None:
             link = self.defaultLink
 
-        if not self.isOpenLink(link):
-            self.messageAlert(f'{str(link)}无法打开')
-            return False
+        # if not self.isOpenLink(link):
+        #     self.messageAlert(f'{str(link)}无法打开')
+        #     return False
         try:
             self.capture3 = cv2.VideoCapture(link)
             # cv2.CAP_FFMPEG
@@ -628,10 +633,10 @@ class MainWindow(QMainWindow):
                 if self.startbox == QMessageBox.StandardButton.Ok:
                     widgets.creditsLabel.setText("正在加载视频")
 
-                    self.out1 = None
-                    self.out2 = None
-                    self.out3 = None
-                    self.out4 = None
+                    # self.out1 = None
+                    # self.out2 = None
+                    # self.out3 = None
+                    # self.out4 = None
 
                     self.start_capture(self.link1)
 

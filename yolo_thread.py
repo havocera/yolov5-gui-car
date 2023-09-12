@@ -19,9 +19,9 @@ class VideoRecorder():
         self.capture = None
         self.out1 = None
         # self.output_path = output_path
-        self.last_url = None
+        self.last_url = ""
         self.base_path = os.path.abspath('.') + "/video/"
-        self.is_recording = 1
+        self.is_recording = threading.Event()
         self.strpath = datetime.datetime.now().strftime(
             "%Y-%m-%d_%H-%M-%S")
         self.fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -29,14 +29,17 @@ class VideoRecorder():
         self.log(self.num)
 
     def run(self, url):
+
         if self.last_url != url:
+
             self.log(url)
             self.last_url = url
             if self.out1:
                 self.out1.release()
                 self.capture.release()
-                self.stop_recording()
-            self.record_video(url)
+                self.stop()
+
+            self.start_recording(url)
 
     def log(self, log):
         with open("yolo_log.txt", "a", encoding="utf-8") as f:
@@ -48,13 +51,15 @@ class VideoRecorder():
     def stop(self):
         self.out1.release()
         self.capture.release()
-        self.stop_recording()
+
+        self.is_recording.clear()
 
     def start_recording(self, url):
-        self.record_video(url)
+        self.is_recording.set()
+        self.log("录像子线程")
+        rec_video = threading.Thread(target=self.record_video, args=(url, self.num))
+        rec_video.start()
 
-    def stop_recording(self):
-        self.is_recording = 0
 
     def isOpenLink(self, rtsp_url):
 
@@ -70,15 +75,16 @@ class VideoRecorder():
             print(f"无法连接到RTSP服务器：{rtsp_url}")
             return False
 
-    def record_video(self, link):
-        if not os.path.exists(self.base_path + self.num + "/" + self.strpath + "/"):
-            os.makedirs(self.base_path + self.num + "/" + self.strpath + "/")
+    def record_video(self, link, num):
+        if not os.path.exists(self.base_path + num + "/" + self.strpath + "/"):
+            os.makedirs(self.base_path + num + "/" + self.strpath + "/")
 
         self.capture = cv2.VideoCapture(link)
 
-        filename = self.base_path + self.num + "/" + self.strpath + "/" + self.num + "_" + datetime.datetime.now().strftime(
+        filename = self.base_path + num + "/" + self.strpath + "/" + num + "_" + datetime.datetime.now().strftime(
             "%Y-%m-%d_%H-%M-%S") + ".mp4"
         self.out1 = cv2.VideoWriter(filename, self.fourcc, 30, (1280, 720))
+        self.log(f"开始录像，通道{num},连接：{link}")
         while self.is_recording:
             ret, frame = self.capture.read()
             if not ret:
@@ -324,8 +330,8 @@ class YoloThread(QObject):
             num = cl + 1
             self.recorders["stream" + str(num)].run(url)
             message = json.dumps(isclassdata)
-            if url != self._frontUrl & self.CLASSES[cl] != self._frontClass:
-                self.yoloSignl.emit(message)
+
+            self.yoloSignl.emit(message)
             self.log(message)
 
             # print('class: {}, score: {}'.format(CLASSES[cl], score))
@@ -387,15 +393,16 @@ class YoloThread(QObject):
         ## 1.start camera threads and save threads
         # num_processes = 20
         # pool = multiprocessing.Pool(processes=num_processes)
-        self.log("正在开启多线程")
-        self.yoloStatusSignl.emit(json.dumps({"status": 1, "message": "正在开启多线程"}))
+        self.log("正在开启录像")
+        self.yoloStatusSignl.emit(json.dumps({"status": 1, "message": "正在开启录像"}))
         for i in range(1, 5):
             self.recorders["stream" + str(i)].strpath = self.strpath
             self.recorders["stream" + str(i)].run(camera_access[0])
-
+        self.log("正在开启多线程")
+        self.yoloStatusSignl.emit(json.dumps({"status": 1, "message": "正在开启多线程"}))
         for camera in camera_access:
-            if self.isOpenLink(camera):
-
+            # if self.isOpenLink(camera):
+            if True:
                 identification = None
                 cameraThread = None
                 dstDir = None
@@ -445,11 +452,40 @@ class YoloThread(QObject):
         self.log("视频完事了")
         print("视频完事了")
 
+def start_keyboard_listener():
+    """
+    开始键盘监听的回调函数
+    """
+    print("Ctrl+Shift+A pressed")
+
+    yolo.captureMutipleCamera()
+    # do something
+
+
+def stop_keyboard_listener():
+    """
+    停止键盘监听的回调函数
+    """
+    print("Ctrl+Shift+Q pressed")
+    yolo.isStopyolo = False
+    thread_count = 0
+    for i in yolo.thread_ids:
+        i.join()
+        if i.is_alive():
+            thread_count += 1
+
+    for num in range(1, 5):
+        yolo.recorders["stream" + str(num)].stop()
+    yolo.createVideo()
+
+    # do something
 
 if __name__ == '__main__':
-    print("1111")
-    r = {
-        "s1": VideoRecorder(1)
-    }
-
-    r["s1"].run("./video.mp4")
+    import keyboard
+    yolo = YoloThread()
+    keyboard.add_hotkey('Ctrl+Shift+A', start_keyboard_listener)
+    keyboard.add_hotkey('Ctrl+Shift+Q', stop_keyboard_listener)
+    try:
+        keyboard.wait('ctrl+c')
+    except KeyboardInterrupt:
+        print(KeyboardInterrupt)
